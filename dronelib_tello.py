@@ -3,7 +3,10 @@ import threading
 import time
 from datetime import datetime
 from math import atan2, cos, sin, degrees, radians, hypot, copysign
+import cv2
 from drone import Drone
+from util import *
+
 
 class Stats:
     def __init__(self, command, id):
@@ -67,6 +70,12 @@ class Tello:
         self.log = []
 
         self.MAX_TIME_OUT = 15.0
+        self.local_video_ip = "0.0.0.0"
+        self.local_video_port = 11111
+
+
+
+
 
 
     def send_command(self, command):
@@ -93,7 +102,7 @@ class Tello:
                 # TODO: is timeout considered failure or next command still get executed
                 # now, next one got executed
                 return
-        print 'Done!!! sent command: %s to %s' % (command, self.tello_ip)
+        print 'Sent command: %s to %s' % (command, self.tello_ip)
 
     def _receive_thread(self):
         """Listen to responses from the Tello.
@@ -118,6 +127,15 @@ class Tello:
 
     def get_log(self):
         return self.log
+
+    def get_image(self):
+        with new_suppress_stderr():
+            video_capture = cv2.VideoCapture('udp://@0.0.0.0:' + str(self.local_video_port))
+            if not video_capture.isOpened():
+                video_capture.open('udp://@0.0.0.0:' + str(self.local_video_port))
+            read_flag, frame = video_capture.read()
+            return frame
+
 
 class TelloDrone(Drone):
 
@@ -146,7 +164,7 @@ class TelloDrone(Drone):
 
     def _move_z_local_frame(self, cm):
         if (self.z_cm + cm >= self.max_height):
-            print("Exceeding max height, aborting climb command")
+            err("Exceeding max height, aborting climb command")
             return
 
         z_command = "up " if cm > 0 else "down "
@@ -167,8 +185,11 @@ class TelloDrone(Drone):
     def activate(self):
         self.drone.send_command("command") # enable SDK mode
         self.drone.send_command("streamon")
-        # self.drone.send_command("moff") # disable mission pads
+        info("Activating drone...")
+        # The video stream needs time to initialize
+        time.sleep(3)
         self.activated = True
+        info("Drone activated!")
         
 
 
@@ -179,13 +200,14 @@ class TelloDrone(Drone):
     def yaw(self):
         return self.yaw
 
-    def takeoff(self, height=3.0): # height in m to match SimDrone
+    def takeoff(self, height=0.8): # height in m to match SimDrone
         if self.activated == False:
             return
     
         self.z_cm = 80 # Approximately default takeoff height
         self.drone.send_command("takeoff")
         self._move_z_local_frame(100*height-self.z_cm)
+        info("Takeoff complete")
 
         
     def set_target(self,x, y, z=None, yaw=None):
@@ -206,3 +228,11 @@ class TelloDrone(Drone):
 
         if yaw != None:
             self._turn(yaw-self.yaw)
+
+
+
+
+    def camera_image(self):
+        image = self.drone.get_image()
+        return image
+
