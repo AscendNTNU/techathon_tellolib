@@ -164,7 +164,7 @@ class TelloDrone(Drone):
 
     def _move_z_local_frame(self, cm):
         if (self.z_cm + cm >= self.max_height):
-            print("Exceeding max height, aborting climb command")
+            err("Exceeding max height, aborting climb command")
             return
 
         z_command = "up " if cm > 0 else "down "
@@ -185,11 +185,11 @@ class TelloDrone(Drone):
     def activate(self):
         self.drone.send_command("command") # enable SDK mode
         self.drone.send_command("streamon")
-        print("Activating drone...")
+        info("Activating drone...")
         # The video stream needs time to initialize
         time.sleep(3)
         self.activated = True
-        print("Drone activated!")
+        info("Drone activated!")
         
 
 
@@ -207,6 +207,7 @@ class TelloDrone(Drone):
         self.z_cm = 80 # Approximately default takeoff height
         self.drone.send_command("takeoff")
         self._move_z_local_frame(100*height-self.z_cm)
+        info("Takeoff complete")
 
         
     def set_target(self,x, y, z=None, yaw=None):

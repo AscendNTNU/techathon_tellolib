@@ -32,8 +32,23 @@ class new_suppress_stderr(object):
         for fd in self.null_fds + self.save_fds:
             os.close(fd)
 
+class Colours:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    ERROR = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+
 def info(str):
-    print("[INFO] " + str)
+    print(Colours.OKGREEN + "[INFO] " + str + Colours.ENDC)
+
+def err(str):
+    print(Colours.ERROR + "[ERROR] " + str + Colours.ENDC)
 
 def save_image(frame):
     path = "img/"
