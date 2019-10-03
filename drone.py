@@ -20,6 +20,10 @@ class Drone:
         pass
 
     @abstractproperty
+    def camera_image(self):
+        pass
+
+    @abstractproperty
     def yaw(self):
         pass
 

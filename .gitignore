@@ -3,3 +3,4 @@ venv
 *.pyc
 *.so
 h264decoder
+*.jpg
