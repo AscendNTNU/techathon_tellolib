@@ -165,7 +165,11 @@ class TelloDrone(Drone):
 
     def _move_z_local_frame(self, cm):
         if (self.z_cm + cm >= self.max_height):
-            err("Exceeding max height, aborting climb command")
+            err("Setpoint exceeding maximum allowed height. Aborting program")
+            self.drone.send_command("stop")
+            self.drone.send_command("land")
+            sys.exit("Setpoint exceeded safety limits")
+
             return
 
         z_command = "up " if cm > 0 else "down "
@@ -177,7 +181,11 @@ class TelloDrone(Drone):
         dy = sin(radians(self.yaw)) * cm
 
         if max(self.x_cm + dx, self.y_cm + dy) > self.max_distance:
-            err("Exceeding maximum allowed distance from home. Aborting move command.")
+            err("Setpoint exceeding maximum allowed distance from home. Aborting program.")
+            self.drone.send_command("stop")
+            self.drone.send_command("land")
+            sys.exit("Setpoint exceeded safety limits")
+
 
         x_command = "forward " if cm > 0 else "back "
         self.drone.send_command(x_command + str(abs(cm)))
