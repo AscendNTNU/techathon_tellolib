@@ -148,6 +148,7 @@ class TelloDrone(Drone):
         self.z_cm = 0.0
         self.activated = False
         self.max_height = 500.0 # cm
+        self.max_distance = 1000.0 # cm, max distance the drone is allowed to travel from start point in x or y direction
 
     def _turn(self, delta_yaw):
         delta_yaw %= 360
@@ -172,12 +173,15 @@ class TelloDrone(Drone):
         self.z_cm += cm
 
     def _move_x_local_frame(self, cm):
+        dx = cos(radians(self.yaw)) * cm
+        dy = sin(radians(self.yaw)) * cm
+
+        if max(self.x_cm + dx, self.y_cm + dy) > self.max_distance:
+            err("Exceeding maximum allowed distance from home. Aborting move command.")
 
         x_command = "forward " if cm > 0 else "back "
         self.drone.send_command(x_command + str(abs(cm)))
 
-        dx = cos(radians(self.yaw)) * cm
-        dy = sin(radians(self.yaw)) * cm
         self.x_cm += dx
         self.y_cm += dy
 
