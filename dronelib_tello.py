@@ -213,7 +213,8 @@ class TelloDrone(Drone):
         return self.yaw
 
     def takeoff(self, height=0.8): # height in m to match SimDrone
-        if self.activated == False:
+        if not self.activated:
+            err("Could not take off. Drone is not yet activated.")
             return
     
         self.z_cm = 80 # Approximately default takeoff height
@@ -221,6 +222,13 @@ class TelloDrone(Drone):
         self._move_z_local_frame(100*height-self.z_cm)
         info("Takeoff complete")
 
+    def land(self):
+        if not self.activated:
+            err("Could not land. Drone is not yet activated.")
+            return
+
+        info("Landing...")
+        self.drone.send_command("land")
         
     def set_target(self,x, y, z=None, yaw=None):
         x_cm = x * 100

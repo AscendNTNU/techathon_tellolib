@@ -19,6 +19,10 @@ class Drone:
     def set_target(self,x,y,z,yaw):
         pass
 
+    @abstractmethod
+    def land(self):
+        pass
+
     @abstractproperty
     def camera_image(self):
         pass

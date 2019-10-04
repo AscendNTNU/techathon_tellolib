@@ -6,14 +6,10 @@ def main():
     drone = TelloDrone()
     drone.activate()
     drone.takeoff()
-    drone.set_target(1,0)
-    drone.set_target(11,0)
-    drone.set_target(0,0)
-    drone.set_target(0,20)
     #image = drone.camera_image()
     #save_image(image)
 
-    drone.drone.send_command("land")
+    drone.land()
 
 
 
