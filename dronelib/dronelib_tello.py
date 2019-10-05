@@ -198,7 +198,7 @@ class TelloDrone(Drone):
 
     @property
     def position(self):
-        return self.x_cm / 100, self.y_cm / 100, 100
+        return self.x_cm / 100, self.y_cm / 100, self.z_cm / 100
 
     @property
     def yaw(self):
