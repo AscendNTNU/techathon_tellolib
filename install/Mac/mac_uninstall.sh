@@ -7,8 +7,10 @@ brew update
 
 sudo pip uninstall matplotlib -y
 sudo pip uninstall numpy -y
-sudo pip install pillow -y
-sudo pip install opencv-python -y
+sudo pip ininstall nose -y
+sudo pip uninstall tornado -y
+sudo pip uninstall pillow -y
+sudo pip uninstall opencv-python -y
 sudo pip uninstall pip -y
 
 brew uninstall tcl-tk
