@@ -200,10 +200,6 @@ class TelloDrone(Drone):
     def position(self):
         return self.x_cm / 100, self.y_cm / 100, self.z_cm / 100
 
-    @property
-    def yaw(self):
-        return self.yaw
-
     def takeoff(self, height=0.8):  # height in m to match SimDrone
         if not self.activated:
             err("Could not take off. Drone is not yet activated.")
