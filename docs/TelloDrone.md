@@ -27,20 +27,20 @@ video transfer.
 ---
 
 ```python
-TelloDrone.takeoff(z=0.8)
+drone.takeoff(z=0.8)
 ``` 
 
 Takes off to the specified height. Default is 0.8 meters.
 
 ---
 ```python
-TelloDrone.land()
+drone.land()
 ```
 Lands the drone.
 
 ---
 ```python
-TelloDrone.set_target(x,y,z=None, yaw=None)
+drone.set_target(x,y,z=None, yaw=None)
 ```
 
 Turns the drone towards the target, and flies there in a straight line. If no z value is provided,
@@ -52,20 +52,20 @@ Setpoints less than 20cm away from the drone will be ignored. This is a limitati
 
 ---
 ```python
-TelloDrone.camera_image
+drone.camera_image
 ```
 A numpy ndarray object of the current camera frame.
 The image can be saved by passing it to the method `save_image(frame)` in `dronelib.utils`.
 
 ---
 ```python
-TelloDrone.position
+drone.position
 ```
 A tuple containing the (x,y,z) coordinates of the drone
 
 ---
 ```python
-TelloDrone.yaw
+drone.yaw
 ```
 The current yaw of the drone in degrees. Positive values are counterclockwise.
 
