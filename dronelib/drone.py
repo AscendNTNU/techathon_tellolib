@@ -28,9 +28,7 @@ class Drone:
         pass
 
     @abstractproperty
-    def yaw(self):
-        pass
-
-    @abstractproperty
     def position(self):
         pass
+
+

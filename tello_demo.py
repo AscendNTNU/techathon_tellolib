@@ -5,8 +5,20 @@ from time import sleep
 def main():
     drone = TelloDrone()
     drone.activate()
+
     drone.takeoff()
-    image = drone.camera_image()
+
+    drone.set_target(1,0)
+
+    print(drone.position)
+    print(drone.yaw)
+
+    drone.set_target(0,0)
+
+    print(drone.position)
+    print(drone.yaw)
+
+    image = drone.camera_image
     save_image(image)
 
     drone.land()

@@ -13,5 +13,6 @@ Happy flying, and remember to have fun!
 ## Guides 
 
 - [Getting started](docs/getting_started.md) - What you need to get airborne 
+- [TelloDrone class documentation](docs/TelloDrone.md) - The class used to interface with the Tello
 - [Tello user manual](https://dl-cdn.ryzerobotics.com/downloads/Tello/20180212/Tello+User+Manual+v1.0_EN_2.12.pdf) - More information about the Tello for those of you who are interested.
 

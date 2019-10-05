@@ -44,13 +44,14 @@ class Stats:
 
     def return_stats(self):
         str = ''
-        str +=  '\nid: %s\n' % self.id
+        str += '\nid: %s\n' % self.id
         str += 'command: %s\n' % self.command
         str += 'response: %s\n' % self.response
         str += 'start time: %s\n' % self.start_time
         str += 'end_time: %s\n' % self.end_time
         str += 'duration: %s\n' % self.duration
         return str
+
 
 class Tello:
     def __init__(self):
@@ -72,11 +73,6 @@ class Tello:
         self.MAX_TIME_OUT = 15.0
         self.local_video_ip = "0.0.0.0"
         self.local_video_port = 11111
-
-
-
-
-
 
     def send_command(self, command):
         """
@@ -147,20 +143,19 @@ class TelloDrone(Drone):
         self.y_cm = 0.0
         self.z_cm = 0.0
         self.activated = False
-        self.max_height = 500.0 # cm
-        self.max_distance = 1000.0 # cm, max distance the drone is allowed to travel from start point in x or y direction
+        self.max_height = 500.0  # cm
+        self.max_distance = 1000.0  # cm, max distance the drone is allowed to travel from start point in x or y direction
 
     def _turn(self, delta_yaw):
         delta_yaw %= 360
 
         if abs(delta_yaw) > 180:
-            delta_yaw = (360 + delta_yaw) if (delta_yaw < 0) else (delta_yaw-360)
-
+            delta_yaw = (360 + delta_yaw) if (delta_yaw < 0) else (delta_yaw - 360)
 
         yaw_command = "ccw " if delta_yaw > 0 else "cw "
         if delta_yaw != 0:
             self.drone.send_command(yaw_command + str(abs(delta_yaw)))
-    
+
         self.yaw += delta_yaw
 
     def _move_z_local_frame(self, cm):
@@ -186,40 +181,33 @@ class TelloDrone(Drone):
             self.drone.send_command("land")
             sys.exit("Setpoint exceeded safety limits")
 
-
         x_command = "forward " if cm > 0 else "back "
         self.drone.send_command(x_command + str(abs(cm)))
 
         self.x_cm += dx
         self.y_cm += dy
 
-
     def activate(self):
-        self.drone.send_command("command") # enable SDK mode
+        self.drone.send_command("command")  # enable SDK mode
         self.drone.send_command("streamon")
         info("Activating drone...")
         # The video stream needs time to initialize
         time.sleep(3)
         self.activated = True
         info("Drone activated!")
-        
 
-
+    @property
     def position(self):
-        return (self.x_cm / 100, self.y_cm / 100, 100)
+        return self.x_cm / 100, self.y_cm / 100, self.z_cm / 100
 
-
-    def yaw(self):
-        return self.yaw
-
-    def takeoff(self, height=0.8): # height in m to match SimDrone
+    def takeoff(self, height=0.8):  # height in m to match SimDrone
         if not self.activated:
             err("Could not take off. Drone is not yet activated.")
             return
-    
-        self.z_cm = 80 # Approximately default takeoff height
+
+        self.z_cm = 80  # Approximately default takeoff height
         self.drone.send_command("takeoff")
-        self._move_z_local_frame(100*height-self.z_cm)
+        self._move_z_local_frame(100 * height - self.z_cm)
         info("Takeoff complete")
 
     def land(self):
@@ -229,30 +217,27 @@ class TelloDrone(Drone):
 
         info("Landing...")
         self.drone.send_command("land")
-        
-    def set_target(self,x, y, z=None, yaw=None):
+
+    def set_target(self, x, y, z=None, yaw=None):
         x_cm = x * 100
         y_cm = y * 100
 
         if z != None:
             z_cm = z * 100
             self._move_z_local_frame(z_cm - self.z_cm)
-        
+
         dx = x_cm - self.x_cm
         dy = y_cm - self.y_cm
 
-        target_direction = degrees(atan2(dy,dx))
-        self._turn(target_direction-self.yaw)
+        target_direction = degrees(atan2(dy, dx))
+        self._turn(target_direction - self.yaw)
 
-        self._move_x_local_frame(hypot(dy,dx))
+        self._move_x_local_frame(hypot(dy, dx))
 
         if yaw != None:
-            self._turn(yaw-self.yaw)
+            self._turn(yaw - self.yaw)
 
-
-
-
+    @property
     def camera_image(self):
         image = self.drone.get_image()
         return image
-
