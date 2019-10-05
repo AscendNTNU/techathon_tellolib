@@ -19,7 +19,7 @@ drone = TelloDrone()
 ### Methods and properties
 
 ```python 
-TelloDrone.activate()
+drone.activate()
 ```
 This needs to be called after creating a new TelloDrone object, and will prepare the drone for flight and
 video transfer.
