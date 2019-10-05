@@ -1,5 +1,5 @@
-from dronelib_tello import TelloDrone
-from util import *
+from dronelib.dronelib_tello import TelloDrone
+from dronelib.util import *
 from time import sleep
 
 def main():
@@ -9,7 +9,7 @@ def main():
     image = drone.camera_image()
     save_image(image)
 
-    drone.drone.send_command("land")
+    drone.land()
 
 
 

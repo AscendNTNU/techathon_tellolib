@@ -148,6 +148,7 @@ class TelloDrone(Drone):
         self.z_cm = 0.0
         self.activated = False
         self.max_height = 500.0 # cm
+        self.max_distance = 1000.0 # cm, max distance the drone is allowed to travel from start point in x or y direction
 
     def _turn(self, delta_yaw):
         delta_yaw %= 360
@@ -164,7 +165,11 @@ class TelloDrone(Drone):
 
     def _move_z_local_frame(self, cm):
         if (self.z_cm + cm >= self.max_height):
-            err("Exceeding max height, aborting climb command")
+            err("Setpoint exceeding maximum allowed height. Aborting program")
+            self.drone.send_command("stop")
+            self.drone.send_command("land")
+            sys.exit("Setpoint exceeded safety limits")
+
             return
 
         z_command = "up " if cm > 0 else "down "
@@ -172,12 +177,19 @@ class TelloDrone(Drone):
         self.z_cm += cm
 
     def _move_x_local_frame(self, cm):
+        dx = cos(radians(self.yaw)) * cm
+        dy = sin(radians(self.yaw)) * cm
+
+        if max(self.x_cm + dx, self.y_cm + dy) > self.max_distance:
+            err("Setpoint exceeding maximum allowed distance from home. Aborting program.")
+            self.drone.send_command("stop")
+            self.drone.send_command("land")
+            sys.exit("Setpoint exceeded safety limits")
+
 
         x_command = "forward " if cm > 0 else "back "
         self.drone.send_command(x_command + str(abs(cm)))
 
-        dx = cos(radians(self.yaw)) * cm
-        dy = sin(radians(self.yaw)) * cm
         self.x_cm += dx
         self.y_cm += dy
 
@@ -201,7 +213,8 @@ class TelloDrone(Drone):
         return self.yaw
 
     def takeoff(self, height=0.8): # height in m to match SimDrone
-        if self.activated == False:
+        if not self.activated:
+            err("Could not take off. Drone is not yet activated.")
             return
     
         self.z_cm = 80 # Approximately default takeoff height
@@ -209,6 +222,13 @@ class TelloDrone(Drone):
         self._move_z_local_frame(100*height-self.z_cm)
         info("Takeoff complete")
 
+    def land(self):
+        if not self.activated:
+            err("Could not land. Drone is not yet activated.")
+            return
+
+        info("Landing...")
+        self.drone.send_command("land")
         
     def set_target(self,x, y, z=None, yaw=None):
         x_cm = x * 100
