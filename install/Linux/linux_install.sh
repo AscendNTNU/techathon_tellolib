@@ -18,6 +18,8 @@ sudo apt-get install libswscale-dev -y
 sudo apt-get install python-numpy -y
 sudo apt-get install python-matplotlib -y
 sudo pip install opencv-python
+sudo pip install opencv-contrib-python
 sudo apt-get install python-imaging-tk
+sudo apt-get install libsm6
 
 echo 'Installation Done!'

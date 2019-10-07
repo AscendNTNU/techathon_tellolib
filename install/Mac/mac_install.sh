@@ -36,6 +36,10 @@ brew install ffmpeg
 
 brew install tcl-tk
 
+sudo pip install nose --ignore-installed
+
+sudo pip install tornado --ignore-installed
+
 sudo pip install numpy --ignore-installed
 
 sudo pip install matplotlib --ignore-installed
